@@ -12,6 +12,7 @@ const {
   getSessionCookieOptions,
 } = require('./utils/authSession');
 const { ensureAdminUser } = require('./utils/adminUser');
+const { errorMiddleware } = require('./middlewares/errorMiddleware');
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -28,7 +29,7 @@ const SESSION_MAX_AGE_MS = Number.parseInt(
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:1404')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -118,6 +119,7 @@ app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/contacts', require('./routes/contactRoutes'));
 app.use('/api/leads', require('./routes/leadsRoutes'));
 app.use('/api/appointments', require('./routes/appointmentsRoutes'));
+app.use('/api/chat', require('./routes/chatApiRoutes'));
 app.use('/api/chats', require('./routes/chatRoutes'));
 app.use('/api/invoices', require('./routes/invoiceRoutes'));
 app.use('/api/uploads', require('./routes/uploadRoutes'));
@@ -139,6 +141,8 @@ app.get('/', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+
+app.use(errorMiddleware);
 
 async function startServer() {
   try {

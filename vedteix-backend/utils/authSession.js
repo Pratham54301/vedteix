@@ -1,11 +1,11 @@
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'vedteix.sid';
 
 function getFrontendBaseUrl() {
-  return (process.env.FRONTEND_URL || 'http://localhost:3000')
+  return (process.env.FRONTEND_URL || 'http://localhost:1404')
     .split(',')
     .map((value) => value.trim())
     .find(Boolean)
-    ?.replace(/\/$/, '') || 'http://localhost:3000';
+    ?.replace(/\/$/, '') || 'http://localhost:1404';
 }
 
 function getSessionCookieOptions() {

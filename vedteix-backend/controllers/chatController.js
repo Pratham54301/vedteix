@@ -1,4 +1,5 @@
 const ChatConversation = require('../models/ChatConversation');
+const ChatExchange = require('../models/ChatExchange');
 const Lead = require('../models/Lead');
 const {
   isNonEmptyString,
@@ -6,72 +7,141 @@ const {
   normalizeString,
 } = require('../utils/validation');
 
-async function generateAiReply({ conversation, message, visitor }) {
-  if (!process.env.GEMINI_API_KEY) {
-    const baseReply =
-      'Thanks for reaching out. I can help you with services, timelines, pricing, and project planning. ';
-    const missingFields = [];
-    if (!visitor.name) missingFields.push('your name');
-    if (!visitor.email) missingFields.push('your email');
-    if (!visitor.requirement) missingFields.push('your project requirement');
+const FOOTER_BY_LANG = {
+  en: '\n\nThank you for your message. If you need further assistance, call or message on +91 77779 67668. We will help you. Thanks again.',
+  hi: '\n\nआपके संदेश के लिए धन्यवाद। यदि आपको और सहायता चाहिए, तो +91 77779 67668 पर कॉल या मैसेज करें। हम मदद करेंगे। पुनः धन्यवाद।',
+  gu: '\n\nતમારા સંદેશ બદલ આભાર. વધુ મદદ માટે +91 77779 67668 પર કૉલ અથવા મેસેજ કરો. અમે મદદ કરીશું. ફરીથી આભાર.',
+};
 
-    return `${baseReply}${
-      missingFields.length > 0
-        ? `To continue, please share ${missingFields.join(', ')}.`
-        : 'Our team will review your details and follow up shortly.'
-    }`;
+function normalizeLanguage(raw) {
+  const code = String(raw || 'en')
+    .toLowerCase()
+    .split(/[-_]/)[0];
+  if (code === 'hi' || code === 'gu') {
+    return code;
+  }
+  return 'en';
+}
+
+function languageDirective(lang) {
+  if (lang === 'hi') {
+    return 'You must write your entire reply in Hindi (Devanagari script where appropriate).';
+  }
+  if (lang === 'gu') {
+    return 'You must write your entire reply in Gujarati.';
+  }
+  return 'You must write your entire reply in English.';
+}
+
+function buildFallbackCore(visitor, lang) {
+  const base =
+    lang === 'hi'
+      ? 'हम सेवाओं, समयसीमा और योजना में मदद कर सकते हैं। '
+      : lang === 'gu'
+        ? 'અમે સેવાઓ, સમયરેખા અને યોજનામાં મદદ કરી શકીએ છીએ. '
+        : 'I can help with services, timelines, and project planning. ';
+  const missing = [];
+  if (!visitor.name) {
+    missing.push(lang === 'hi' ? 'अपना नाम' : lang === 'gu' ? 'તમારું નામ' : 'your name');
+  }
+  if (!visitor.email) {
+    missing.push(lang === 'hi' ? 'ईमेल' : lang === 'gu' ? 'ઇમેઇલ' : 'your email');
+  }
+  if (!visitor.requirement) {
+    missing.push(
+      lang === 'hi'
+        ? 'परियोजना आवश्यकता'
+        : lang === 'gu'
+          ? 'પ્રોજેક્ટ જરૂરિયાત'
+          : 'your project requirement'
+    );
+  }
+  if (missing.length > 0) {
+    const prefix =
+      lang === 'hi'
+        ? 'कृपया साझा करें: '
+        : lang === 'gu'
+          ? 'કૃપા કરીને શેર કરો: '
+          : 'Please share ';
+    return `${base}${prefix}${missing.join(', ')}.`;
+  }
+  return `${base}${
+    lang === 'hi'
+      ? 'हमारी टीम जल्द संपर्क करेगी।'
+      : lang === 'gu'
+        ? 'અમારી ટીમ ટૂંક સમયમાં સંપર્ક કરશે.'
+        : 'Our team will follow up shortly.'
+  }`;
+}
+
+function appendFooter(text, lang) {
+  const footer = FOOTER_BY_LANG[lang] || FOOTER_BY_LANG.en;
+  const trimmed = normalizeString(text, { max: 8000 });
+  if (trimmed.includes('+91 77779 67668')) {
+    return trimmed;
+  }
+  return `${trimmed}${footer}`;
+}
+
+async function generateGeminiReply({ conversation, visitor, language }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return appendFooter(buildFallbackCore(visitor, language), language);
   }
 
-  const transcript = conversation.messages
-    .slice(-8)
-    .map((item) => `${item.role.toUpperCase()}: ${item.content}`)
-    .join('\n');
+  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+    model
+  )}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-  const prompt = [
-    'You are the AI sales and support assistant for Vedteix Technology.',
-    'Answer clearly, concisely, and helpfully.',
-    'If the visitor has not provided their name, email, or project requirement yet, politely ask for the missing information.',
-    'If the visitor asks about services, explain that Vedteix delivers web, mobile, SaaS, AI, and product engineering services.',
-    'Keep the tone professional and conversion-focused.',
-    visitor.name ? `Visitor name: ${visitor.name}` : 'Visitor name: missing',
-    visitor.email ? `Visitor email: ${visitor.email}` : 'Visitor email: missing',
-    visitor.requirement ? `Visitor requirement: ${visitor.requirement}` : 'Visitor requirement: missing',
-    transcript ? `Conversation history:\n${transcript}` : '',
-    `Latest user message: ${message}`,
-  ]
-    .filter(Boolean)
-    .join('\n\n');
+  const systemText = [
+    'You are the professional business assistant for Vedteix Technology.',
+    languageDirective(language),
+    'Answer helpfully and concisely. Vedteix offers web, mobile, SaaS, AI, and product engineering.',
+    'If name, email, or project requirement is missing, politely ask for what is still needed.',
+    'Do not invent fixed pricing; offer to connect the visitor with the team for quotes.',
+    'Do not mention API keys or internal systems.',
+    visitor.name ? `Visitor name: ${visitor.name}` : 'Visitor name: unknown',
+    visitor.email ? `Visitor email: ${visitor.email}` : 'Visitor email: unknown',
+    visitor.requirement
+      ? `Stated requirement: ${visitor.requirement}`
+      : 'Project requirement: not yet provided',
+  ].join('\n');
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: prompt }],
-          },
-        ],
-      }),
-    }
-  );
+  const contents = conversation.messages.map((m) => ({
+    role: m.role === 'user' ? 'user' : 'model',
+    parts: [{ text: m.content }],
+  }));
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemText }] },
+      contents,
+      generationConfig: {
+        temperature: 0.55,
+        maxOutputTokens: 1024,
+      },
+    }),
+  });
 
   const payload = await response.json().catch(() => ({}));
   const generatedText =
-    payload?.candidates?.[0]?.content?.parts?.map((part) => part.text).join(' ').trim() || '';
+    payload?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() || '';
 
   if (!response.ok || !generatedText) {
-    throw new Error(payload?.error?.message || 'Failed to generate chatbot response');
+    const errMsg = payload?.error?.message || 'Failed to generate Gemini response';
+    throw new Error(errMsg);
   }
 
-  return generatedText;
+  return appendFooter(normalizeString(generatedText, { max: 6000 }), language);
 }
 
 exports.sendChatMessage = async (req, res) => {
   try {
-    const { conversationId, message, name, email, requirement } = req.body || {};
+    const { conversationId, message, name, email, requirement, language: langRaw } = req.body || {};
+    const language = normalizeLanguage(langRaw);
 
     if (!isNonEmptyString(message, { min: 1, max: 4000 })) {
       return res.status(400).json({ error: 'Please enter a valid message' });
@@ -87,9 +157,7 @@ exports.sendChatMessage = async (req, res) => {
       return res.status(400).json({ error: 'Please provide a valid email address' });
     }
 
-    let conversation = conversationId
-      ? await ChatConversation.findById(conversationId)
-      : null;
+    let conversation = conversationId ? await ChatConversation.findById(conversationId) : null;
 
     if (!conversation) {
       conversation = await ChatConversation.create({
@@ -104,20 +172,37 @@ exports.sendChatMessage = async (req, res) => {
       requirement: visitor.requirement || conversation.visitor?.requirement || '',
     };
 
+    const userContent = normalizeString(message, { max: 4000 });
+
     conversation.messages.push({
       role: 'user',
-      content: normalizeString(message, { max: 4000 }),
+      content: userContent,
     });
 
-    const reply = await generateAiReply({
-      conversation,
-      message: normalizeString(message, { max: 4000 }),
-      visitor: conversation.visitor,
-    });
+    let reply;
+    try {
+      reply = await generateGeminiReply({
+        conversation,
+        visitor: conversation.visitor,
+        language,
+      });
+    } catch (aiError) {
+      console.error('Gemini chat error:', aiError);
+      reply = appendFooter(buildFallbackCore(conversation.visitor, language), language);
+    }
 
     conversation.messages.push({
       role: 'assistant',
-      content: normalizeString(reply, { max: 4000 }),
+      content: normalizeString(reply, { max: 8000 }),
+    });
+
+    await ChatExchange.create({
+      conversationId: conversation._id,
+      userMessage: userContent,
+      aiResponse: normalizeString(reply, { max: 8000 }),
+      name: conversation.visitor.name || '',
+      email: conversation.visitor.email || '',
+      language,
     });
 
     const hasQualifiedLead =
@@ -140,14 +225,14 @@ exports.sendChatMessage = async (req, res) => {
           phone: '',
           message: conversation.visitor.requirement,
           status: 'new',
-          notes: 'Captured from AI chatbot',
+          notes: 'Captured from AI chatbot (Gemini)',
           source: 'chatbot',
         });
       } else {
         lead.name = conversation.visitor.name;
         lead.message = conversation.visitor.requirement;
         if (!lead.notes) {
-          lead.notes = 'Captured from AI chatbot';
+          lead.notes = 'Captured from AI chatbot (Gemini)';
         }
         await lead.save();
       }
@@ -180,5 +265,15 @@ exports.getAllConversations = async (_req, res) => {
   } catch (error) {
     console.error('Failed to load chat conversations:', error);
     res.status(500).json({ error: 'Failed to load chat conversations' });
+  }
+};
+
+exports.getChatExchanges = async (_req, res) => {
+  try {
+    const rows = await ChatExchange.find().sort({ createdAt: -1 }).limit(300).lean();
+    res.json(rows);
+  } catch (error) {
+    console.error('Failed to load chat exchanges:', error);
+    res.status(500).json({ error: 'Failed to load chat exchanges' });
   }
 };

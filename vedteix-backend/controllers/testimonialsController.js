@@ -1,35 +1,10 @@
 const Testimonial = require('../models/Testimonials');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
+const { resolveUploadedImageUrl } = require('../utils/resolveUploadedImageUrl');
 const {
   isNonEmptyString,
   isValidUrl,
   normalizeString,
 } = require('../utils/validation');
-
-async function uploadTestimonialImageIfNeeded(req) {
-  if (!req.file) {
-    return '';
-  }
-
-  const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'vedteix/testimonials' },
-      (error, uploadResult) => {
-        if (uploadResult) {
-          resolve(uploadResult);
-          return;
-        }
-
-        reject(error);
-      }
-    );
-
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-  });
-
-  return result.secure_url;
-}
 
 function validateTestimonialPayload(body) {
   const { name, designation, message, imageUrl } = body || {};
@@ -67,7 +42,7 @@ exports.createTestimonial = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadTestimonialImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/testimonials');
     const testimonial = await Testimonial.create({
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,
@@ -111,7 +86,7 @@ exports.updateTestimonial = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadTestimonialImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/testimonials');
     const testimonial = await Testimonial.findByIdAndUpdate(
       req.params.id,
       {

@@ -1,4 +1,7 @@
+const mongoose = require('mongoose');
 const Invoice = require('../models/Invoice');
+const SiteSettings = require('../models/SiteSettings');
+const { generateInvoicePdfBuffer } = require('../utils/generateInvoicePdf');
 const {
   isNonEmptyString,
   normalizeString,
@@ -123,5 +126,35 @@ exports.deleteInvoice = async (req, res) => {
   } catch (error) {
     console.error('Failed to delete invoice:', error);
     res.status(500).json({ error: 'Failed to delete invoice' });
+  }
+};
+
+exports.downloadInvoicePdf = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid invoice id' });
+    }
+
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) {
+      return res.status(404).json({ error: 'Invoice not found' });
+    }
+
+    let settings = await SiteSettings.findOne();
+    if (!settings) {
+      settings = await SiteSettings.create({});
+    }
+
+    const buffer = await generateInvoicePdfBuffer({ invoice, settings });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${encodeURIComponent(invoice.invoiceNumber)}.pdf"`
+    );
+    res.send(buffer);
+  } catch (error) {
+    console.error('Failed to generate invoice PDF:', error);
+    res.status(500).json({ error: 'Failed to generate invoice PDF' });
   }
 };

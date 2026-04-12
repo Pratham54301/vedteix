@@ -6,8 +6,14 @@ const {
 } = require('../utils/validation');
 
 function buildMeetingLink() {
-  const token = Math.random().toString(36).slice(2, 10);
-  return `https://meet.vedteix.com/${token}`;
+  const token = Math.random().toString(36).slice(2, 12);
+  const base =
+    (process.env.MEETING_LINK_BASE || '').replace(/\/$/, '') ||
+    'https://meet.google.com';
+  if (base.includes('meet.google.com')) {
+    return `${base}/new`;
+  }
+  return `${base}/${token}`;
 }
 
 exports.createAppointment = async (req, res) => {

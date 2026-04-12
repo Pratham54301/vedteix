@@ -1,10 +1,10 @@
 const express = require('express');
-const { sendChatMessage, getAllConversations } = require('../controllers/chatController');
+const { getAllConversations, getChatExchanges } = require('../controllers/chatController');
 const { protect, adminOnly } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.post('/message', sendChatMessage);
 router.get('/', protect, adminOnly, getAllConversations);
+router.get('/logs', protect, adminOnly, getChatExchanges);
 
 module.exports = router;

@@ -1,35 +1,10 @@
 const Technology = require('../models/Technology');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
+const { resolveUploadedImageUrl } = require('../utils/resolveUploadedImageUrl');
 const {
   isNonEmptyString,
   isValidUrl,
   normalizeString,
 } = require('../utils/validation');
-
-async function uploadTechnologyLogoIfNeeded(req) {
-  if (!req.file) {
-    return '';
-  }
-
-  const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'vedteix/technologies' },
-      (error, uploadResult) => {
-        if (uploadResult) {
-          resolve(uploadResult);
-          return;
-        }
-
-        reject(error);
-      }
-    );
-
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-  });
-
-  return result.secure_url;
-}
 
 function validateTechnologyPayload(body) {
   const { name, website, logoUrl } = body || {};
@@ -62,7 +37,7 @@ exports.createTechnology = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedLogoUrl = await uploadTechnologyLogoIfNeeded(req);
+    const uploadedLogoUrl = await resolveUploadedImageUrl(req, 'vedteix/technologies');
     const finalLogoUrl = uploadedLogoUrl || data.logoUrl;
     if (!finalLogoUrl) {
       return res.status(400).json({ error: 'Logo is required' });
@@ -110,7 +85,7 @@ exports.updateTechnology = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedLogoUrl = await uploadTechnologyLogoIfNeeded(req);
+    const uploadedLogoUrl = await resolveUploadedImageUrl(req, 'vedteix/technologies');
     const technology = await Technology.findByIdAndUpdate(
       req.params.id,
       {

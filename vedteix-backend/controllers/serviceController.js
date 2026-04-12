@@ -1,36 +1,11 @@
 const Service = require('../models/Service');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
+const { resolveUploadedImageUrl } = require('../utils/resolveUploadedImageUrl');
 const {
   isNonEmptyString,
   isValidUrl,
   normalizeString,
   toBoolean,
 } = require('../utils/validation');
-
-async function uploadServiceImageIfNeeded(req) {
-  if (!req.file) {
-    return '';
-  }
-
-  const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'vedteix/services' },
-      (error, uploadResult) => {
-        if (uploadResult) {
-          resolve(uploadResult);
-          return;
-        }
-
-        reject(error);
-      }
-    );
-
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-  });
-
-  return result.secure_url;
-}
 
 function validateServicePayload(body) {
   const { title, description, iconName, imageUrl, featured, sortOrder } = body || {};
@@ -66,7 +41,7 @@ exports.createService = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadServiceImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/services');
     const service = await Service.create({
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,
@@ -109,7 +84,7 @@ exports.updateService = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadServiceImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/services');
     const update = {
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,

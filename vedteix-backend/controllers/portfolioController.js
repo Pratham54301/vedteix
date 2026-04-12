@@ -1,7 +1,6 @@
 const Portfolio = require('../models/Portfolio');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
 const sendMail = require('../utils/mailer');
+const { resolveUploadedImageUrl } = require('../utils/resolveUploadedImageUrl');
 const {
   isNonEmptyString,
   isValidUrl,
@@ -9,30 +8,6 @@ const {
   normalizeStringArray,
   toBoolean,
 } = require('../utils/validation');
-
-async function uploadImageIfNeeded(req, folder) {
-  if (!req.file) {
-    return '';
-  }
-
-  const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder },
-      (error, uploadResult) => {
-        if (uploadResult) {
-          resolve(uploadResult);
-          return;
-        }
-
-        reject(error);
-      }
-    );
-
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-  });
-
-  return result.secure_url;
-}
 
 function validatePortfolioPayload(body) {
   const {
@@ -91,7 +66,7 @@ exports.createPortfolio = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadImageIfNeeded(req, 'vedteix/portfolios');
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/portfolios');
     const portfolio = await Portfolio.create({
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,
@@ -146,7 +121,7 @@ exports.updatePortfolio = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadImageIfNeeded(req, 'vedteix/portfolios');
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/portfolios');
     const update = {
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,

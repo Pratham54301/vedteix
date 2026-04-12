@@ -1,35 +1,10 @@
 const Blog = require('../models/Blog');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
+const { resolveUploadedImageUrl } = require('../utils/resolveUploadedImageUrl');
 const {
   isNonEmptyString,
   isValidUrl,
   normalizeString,
 } = require('../utils/validation');
-
-async function uploadBlogImageIfNeeded(req) {
-  if (!req.file) {
-    return '';
-  }
-
-  const result = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'vedteix/blogs' },
-      (error, uploadResult) => {
-        if (uploadResult) {
-          resolve(uploadResult);
-          return;
-        }
-
-        reject(error);
-      }
-    );
-
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
-  });
-
-  return result.secure_url;
-}
 
 function validateBlogPayload(body) {
   const { title, content, author, imageUrl } = body || {};
@@ -63,7 +38,7 @@ exports.createBlog = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadBlogImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/blogs');
     const blog = await Blog.create({
       ...data,
       imageUrl: uploadedImageUrl || data.imageUrl,
@@ -107,7 +82,7 @@ exports.updateBlog = async (req, res) => {
       return res.status(400).json({ error });
     }
 
-    const uploadedImageUrl = await uploadBlogImageIfNeeded(req);
+    const uploadedImageUrl = await resolveUploadedImageUrl(req, 'vedteix/blogs');
     const blog = await Blog.findByIdAndUpdate(
       req.params.id,
       {
