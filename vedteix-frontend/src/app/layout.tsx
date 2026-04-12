@@ -3,9 +3,8 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
-import { TidioCleanup } from '@/components/tidio-cleanup';
+import { AppProviders } from '@/components/providers/app-providers';
+import { SiteChrome } from '@/components/site-chrome';
 
 export const metadata: Metadata = {
   title: 'Vedteix Technology',
@@ -46,14 +45,13 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'min-h-screen bg-background font-body antialiased flex flex-col'
+          'min-h-screen bg-background font-body antialiased flex flex-col transition-colors duration-300'
         )}
       >
-        <Header initialTheme={isDarkTheme ? 'dark' : 'light'} />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <Toaster />
-        <TidioCleanup />
+        <AppProviders initialThemeDark={isDarkTheme}>
+          <SiteChrome initialTheme={isDarkTheme ? 'dark' : 'light'}>{children}</SiteChrome>
+          <Toaster />
+        </AppProviders>
       </body>
     </html>
   );

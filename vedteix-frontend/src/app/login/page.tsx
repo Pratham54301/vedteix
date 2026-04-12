@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,24 +13,28 @@ import { useToast } from "@/hooks/use-toast";
 const BACKEND_AUTH_BASE =
   (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001").replace(/\/$/, "");
 
-function getAuthErrorMessage(errorCode: string | null) {
+function getAuthErrorMessage(
+  t: (key: string) => string,
+  errorCode: string | null
+) {
   switch (errorCode) {
     case "google_not_configured":
-      return "Google sign-in is not configured yet.";
+      return t("login.errors.google_not_configured");
     case "google_failed":
-      return "Google sign-in was cancelled or could not be completed.";
+      return t("login.errors.google_failed");
     case "google_callback_failed":
-      return "Google sign-in returned an unexpected response.";
+      return t("login.errors.google_callback_failed");
     case "google_session_failed":
-      return "Google sign-in succeeded, but the session could not be created.";
+      return t("login.errors.google_session_failed");
     case "logout_failed":
-      return "Logout could not be completed cleanly.";
+      return t("login.errors.logout_failed");
     default:
       return null;
   }
 }
 
 function LoginForm() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -39,7 +44,7 @@ function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const requestedPath = searchParams.get("from") || "/dashboard";
-  const activeError = error || getAuthErrorMessage(searchParams.get("error"));
+  const activeError = error || getAuthErrorMessage(t, searchParams.get("error"));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,19 +57,20 @@ function LoginForm() {
         credentials: "include",
         body: JSON.stringify({ email, password, returnTo: requestedPath }),
       });
-      const data = await res.json().catch(() => ({ error: "Invalid credentials" }));
+      const data = await res.json().catch(() => ({ error: t("login.invalidCredentials") }));
       if (res.ok) {
         router.push(data.returnTo || requestedPath || "/dashboard");
         router.refresh();
       } else {
-        setError(data.error || "Invalid credentials");
-        toast({ title: "Login failed", description: data.error || "Invalid credentials", variant: "destructive" });
+        const msg = data.error || t("login.invalidCredentials");
+        setError(msg);
+        toast({ title: t("login.failedTitle"), description: msg, variant: "destructive" });
       }
-    } catch (requestError) {
-      setError("Unable to reach the authentication service.");
+    } catch {
+      setError(t("login.networkError"));
       toast({
-        title: "Login failed",
-        description: "Unable to reach the authentication service.",
+        title: t("login.failedTitle"),
+        description: t("login.networkError"),
         variant: "destructive",
       });
     } finally {
@@ -82,25 +88,27 @@ function LoginForm() {
     <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
-          <CardDescription>Use your account password or continue with Google to open your workspace.</CardDescription>
+          <CardTitle className="text-2xl">{t("login.title")}</CardTitle>
+          <CardDescription>{t("login.desc")}</CardDescription>
         </CardHeader>
         <CardContent>
           {activeError && <Alert variant="destructive">{activeError}</Alert>}
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
+              <Label htmlFor="email">{t("login.email")}</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+              <Label htmlFor="password">{t("login.password")}</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
-            <Button type="submit" className="w-full" disabled={loading || googleLoading}>{loading ? "Signing in..." : "Continue with password"}</Button>
+            <Button type="submit" className="w-full" disabled={loading || googleLoading}>
+              {loading ? t("login.submitting") : t("login.submit")}
+            </Button>
           </form>
-          <div className="my-4 text-center text-sm text-muted-foreground">or</div>
+          <div className="my-4 text-center text-sm text-muted-foreground">{t("login.or")}</div>
           <Button type="button" variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={loading || googleLoading}>
-            {googleLoading ? "Redirecting to Google..." : "Login with Google"}
+            {googleLoading ? t("login.googleRedirect") : t("login.google")}
           </Button>
         </CardContent>
       </Card>
@@ -109,8 +117,15 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   return (
-    <Suspense fallback={<div className="flex min-h-[calc(100vh-10rem)] items-center justify-center py-12 text-muted-foreground">Loading login...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center py-12 text-muted-foreground">
+          {t("login.loadingPage")}
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

@@ -2,29 +2,36 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/admin?tab=overview", label: "Overview", value: "overview" },
-  { href: "/admin?tab=jobs", label: "Jobs", value: "jobs" },
-  { href: "/admin?tab=portfolios", label: "Portfolios", value: "portfolios" },
-  { href: "/admin?tab=services", label: "Services", value: "services" },
-  { href: "/admin?tab=blogs", label: "Blogs", value: "blogs" },
-  { href: "/admin?tab=testimonials", label: "Testimonials", value: "testimonials" },
-  { href: "/admin?tab=technologies", label: "Technologies", value: "technologies" },
-  { href: "/admin?tab=contacts", label: "Contacts", value: "contacts" },
-  { href: "/admin?tab=newsletters", label: "Newsletters", value: "newsletters" },
-  { href: "/admin?tab=settings", label: "Settings", value: "settings" },
-  { href: "/logout", label: "Logout", value: "logout" },
-];
+  { href: "/admin?tab=overview", labelKey: "admin.overview", value: "overview" },
+  { href: "/admin?tab=leads", labelKey: "admin.leads", value: "leads" },
+  { href: "/admin?tab=appointments", labelKey: "admin.appointments", value: "appointments" },
+  { href: "/admin?tab=chats", labelKey: "admin.chats", value: "chats" },
+  { href: "/admin?tab=invoices", labelKey: "admin.invoices", value: "invoices" },
+  { href: "/admin?tab=invoice-branding", labelKey: "admin.invoiceBranding", value: "invoice-branding" },
+  { href: "/admin?tab=jobs", labelKey: "admin.jobs", value: "jobs" },
+  { href: "/admin?tab=portfolios", labelKey: "admin.portfolios", value: "portfolios" },
+  { href: "/admin?tab=services", labelKey: "admin.services", value: "services" },
+  { href: "/admin?tab=blogs", labelKey: "admin.blogs", value: "blogs" },
+  { href: "/admin?tab=testimonials", labelKey: "admin.testimonials", value: "testimonials" },
+  { href: "/admin?tab=technologies", labelKey: "admin.technologies", value: "technologies" },
+  { href: "/admin?tab=contacts", labelKey: "admin.contacts", value: "contacts" },
+  { href: "/admin?tab=newsletters", labelKey: "admin.newsletters", value: "newsletters" },
+  { href: "/admin?tab=settings", labelKey: "admin.settings", value: "settings" },
+  { href: "/logout", labelKey: "admin.logout", value: "logout" },
+] as const;
 
 export function Sidebar() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "overview";
+  const { t } = useTranslation();
 
   return (
     <nav className="w-full border-b bg-card px-4 py-4 md:min-h-screen md:w-64 md:border-b-0 md:border-r md:px-5 md:py-8">
-      <div className="mb-5 text-2xl font-bold text-primary">Admin Panel</div>
+      <div className="mb-5 text-2xl font-bold text-primary">{t("admin.panel")}</div>
       <ul className="flex flex-wrap gap-2 md:flex-col">
         {navItems.map((item) => (
           <li key={item.href}>
@@ -37,7 +44,7 @@ export function Sidebar() {
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           </li>
         ))}

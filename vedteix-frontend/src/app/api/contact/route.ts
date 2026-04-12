@@ -9,7 +9,7 @@ function validateContactInput(body: any): { valid: boolean; error?: string } {
     return { valid: false, error: 'Invalid request body' };
   }
 
-  const { name, email, message, subject } = body;
+  const { name, email, message, subject, phone } = body;
 
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     return { valid: false, error: 'Name is required' };
@@ -40,6 +40,10 @@ function validateContactInput(body: any): { valid: boolean; error?: string } {
     return { valid: false, error: 'Invalid subject' };
   }
 
+  if (phone != null && phone !== '' && (typeof phone !== 'string' || phone.length > 40)) {
+    return { valid: false, error: 'Invalid phone' };
+  }
+
   return { valid: true };
 }
 
@@ -53,9 +57,28 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const b = body as {
+    name: string;
+    email: string;
+    message: string;
+    subject?: string;
+    phone?: string;
+  };
+
+  const leadBody = {
+    name: b.name.trim(),
+    email: b.email.trim(),
+    phone: typeof b.phone === 'string' ? b.phone.trim() : '',
+    message:
+      b.subject && b.subject.trim().length > 0
+        ? `[${b.subject.trim()}]\n\n${b.message.trim()}`
+        : b.message.trim(),
+    source: 'contact_form',
+  };
+
   return proxyJsonRequest(request, {
-    path: '/api/contacts',
+    path: '/api/leads',
     method: 'POST',
-    body,
+    body: leadBody,
   });
 }

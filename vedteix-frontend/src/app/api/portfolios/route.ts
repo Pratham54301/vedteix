@@ -1,5 +1,9 @@
 import { NextRequest } from 'next/server';
-import { proxyJsonRequest, readJsonBody } from '@/lib/backend-proxy';
+import {
+  proxyFormDataRequest,
+  proxyJsonRequest,
+  readJsonBody,
+} from '@/lib/backend-proxy';
 
 export async function GET(request: NextRequest) {
   return proxyJsonRequest(request, {
@@ -9,11 +13,19 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const ct = request.headers.get('content-type') || '';
+  if (ct.includes('multipart/form-data')) {
+    return proxyFormDataRequest(request, {
+      path: '/api/portfolios',
+      method: 'POST',
+      authRequired: true,
+    });
+  }
   const body = await readJsonBody(request);
   return proxyJsonRequest(request, {
     path: '/api/portfolios',
     method: 'POST',
-    body,
+    body: body ?? undefined,
     authRequired: true,
   });
 }

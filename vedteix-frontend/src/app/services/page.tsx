@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { services as fallbackServices } from '@/lib/data';
 import { serviceIconMap } from '@/lib/service-icons';
 import type { Service } from '@/lib/types';
+import { useTranslation } from 'react-i18next';
 
 export default function ServicesPage() {
+  const { t } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export default function ServicesPage() {
         const response = await fetch('/api/services');
         const payload = await response.json().catch(() => []);
         if (!response.ok) {
-          throw new Error('Failed to load services');
+          throw new Error(t('servicesPage.loadFailed'));
         }
 
         if (!cancelled) {
@@ -29,7 +31,7 @@ export default function ServicesPage() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load services');
+          setError(err instanceof Error ? err.message : t('servicesPage.loadFailed'));
         }
       } finally {
         if (!cancelled) {
@@ -43,7 +45,7 @@ export default function ServicesPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const visibleServices = useMemo(() => {
     if (services.length > 0) {
@@ -68,7 +70,7 @@ export default function ServicesPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Our Services
+        {t('servicesPage.title')}
       </motion.h1>
       <motion.p
         className="mx-auto mb-10 max-w-2xl text-center text-lg text-muted-foreground"
@@ -76,10 +78,10 @@ export default function ServicesPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        Every service card below is now backed by the database and can be managed directly from the admin panel.
+        {t('servicesPage.subtitle')}
       </motion.p>
 
-      {loading && <p className="mb-6 text-center text-sm text-muted-foreground">Loading services...</p>}
+      {loading && <p className="mb-6 text-center text-sm text-muted-foreground">{t('servicesPage.loading')}</p>}
       {error && <p className="mb-6 text-center text-sm text-destructive">{error}</p>}
 
       <div className="grid gap-8 md:grid-cols-3">

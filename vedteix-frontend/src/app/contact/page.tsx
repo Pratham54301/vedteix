@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { ContactForm } from '@/components/contact-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +25,7 @@ const fallbackSettings: SiteSettings = {
 };
 
 export default function ContactPage() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<SiteSettings>(fallbackSettings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,20 +69,19 @@ export default function ContactPage() {
         <div className="space-y-6">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-              Contact
+              {t('contact.kicker')}
             </p>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Let&apos;s build something meaningful together
+              {t('contact.title')}
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
-              Share your goals, timeline, and product vision. We&apos;ll review your request and
-              come back with the right next step.
+              {t('contact.subtitle')}
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Send us a message</CardTitle>
+              <CardTitle>{t('contact.formTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ContactForm />
@@ -91,13 +92,13 @@ export default function ContactPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Reach us directly</CardTitle>
+              <CardTitle>{t('contact.reachTitle')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="flex items-start gap-3">
                 <Mail className="mt-1 h-5 w-5 text-primary" />
                 <div>
-                  <p className="font-medium">Email</p>
+                  <p className="font-medium">{t('contact.email')}</p>
                   <a
                     href={`mailto:${settings.contactEmail}`}
                     className="text-muted-foreground hover:text-primary"
@@ -109,7 +110,7 @@ export default function ContactPage() {
               <div className="flex items-start gap-3">
                 <Phone className="mt-1 h-5 w-5 text-primary" />
                 <div>
-                  <p className="font-medium">Phone</p>
+                  <p className="font-medium">{t('contact.phone')}</p>
                   <a
                     href={`tel:${settings.contactPhone}`}
                     className="text-muted-foreground hover:text-primary"
@@ -127,7 +128,7 @@ export default function ContactPage() {
               </div>
               {loading && (
                 <p className="text-sm text-muted-foreground">
-                  Refreshing contact details from the database...
+                  {t('contact.loading')}
                 </p>
               )}
               {error && <p className="text-sm text-destructive">{error}</p>}
@@ -143,7 +144,7 @@ export default function ContactPage() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Vedteix office location"
+              title={t('contact.mapTitle')}
             />
           </div>
         </div>

@@ -100,3 +100,113 @@ export async function proxyJsonRequest(
 export function getBackendBaseUrlForServer() {
   return getBackendBaseUrl();
 }
+
+/** Forward multipart FormData to Express (multer). Do not set Content-Type — boundary is set automatically. */
+export async function proxyFormDataRequest(
+  request: NextRequest,
+  {
+    path,
+    method = 'POST',
+    authRequired = false,
+  }: {
+    path: string;
+    method?: string;
+    authRequired?: boolean;
+  }
+) {
+  const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+
+  if (authRequired && !sessionId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const cookieHeader = request.headers.get('cookie');
+  const formData = await request.formData();
+
+  const headers: HeadersInit = {
+    Accept: 'application/json',
+  };
+  if (cookieHeader) {
+    headers.Cookie = cookieHeader;
+  }
+
+  try {
+    const response = await fetch(`${getBackendBaseUrl()}${path}`, {
+      method,
+      headers,
+      body: formData,
+      cache: 'no-store',
+    });
+
+    const data = await parseBackendResponse(response);
+    const nextResponse = NextResponse.json(data, { status: response.status });
+    return forwardBackendSetCookie(response, nextResponse);
+  } catch (error) {
+    console.error(`Backend form proxy error for ${path}:`, error);
+    return NextResponse.json(
+      { error: 'Failed to connect to backend service' },
+      { status: 503 }
+    );
+  }
+}
+
+export async function proxyBinaryRequest(
+  request: NextRequest,
+  {
+    path,
+    method = 'GET',
+    authRequired = false,
+  }: {
+    path: string;
+    method?: string;
+    authRequired?: boolean;
+  }
+) {
+  const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+
+  if (authRequired && !sessionId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const cookieHeader = request.headers.get('cookie');
+  const headers: HeadersInit = { Accept: 'application/pdf' };
+  if (cookieHeader) {
+    headers.Cookie = cookieHeader;
+  }
+
+  try {
+    const response = await fetch(`${getBackendBaseUrl()}${path}`, {
+      method,
+      headers,
+      cache: 'no-store',
+    });
+
+    const contentType = response.headers.get('content-type') || 'application/octet-stream';
+    const disposition = response.headers.get('content-disposition');
+
+    if (!response.ok) {
+      const text = await response.text();
+      let data: { error?: string } = {};
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { error: text || 'Request failed' };
+      }
+      return NextResponse.json(data, { status: response.status });
+    }
+
+    const buffer = await response.arrayBuffer();
+    const nextResponse = new NextResponse(buffer, { status: 200 });
+    nextResponse.headers.set('Content-Type', contentType);
+    if (disposition) {
+      nextResponse.headers.set('Content-Disposition', disposition);
+    }
+    return forwardBackendSetCookie(response, nextResponse);
+  } catch (error) {
+    console.error(`Backend binary proxy error for ${path}:`, error);
+    return NextResponse.json(
+      { error: 'Failed to connect to backend service' },
+      { status: 503 }
+    );
+  }
+}

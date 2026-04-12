@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,12 +30,13 @@ const fallbackSettings: SiteSettings = {
 };
 
 const quickLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/services", label: "Services" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/careers", label: "Careers" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/", labelKey: "nav.home" },
+  { href: "/about", labelKey: "footer.about" },
+  { href: "/services", labelKey: "nav.services" },
+  { href: "/portfolio", labelKey: "nav.portfolio" },
+  { href: "/book-appointment", labelKey: "nav.book" },
+  { href: "/careers", labelKey: "nav.careers" },
+  { href: "/contact", labelKey: "nav.contact" },
 ];
 
 const socialIcons = {
@@ -46,6 +48,7 @@ const socialIcons = {
 };
 
 export function Footer() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<SiteSettings>(fallbackSettings);
   const [serviceItems, setServiceItems] = useState<Service[]>([]);
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -78,7 +81,7 @@ export function Footer() {
         }
       } catch {
         if (!cancelled) {
-          setFooterError("Some footer details are temporarily unavailable.");
+          setFooterError(t("footer.unavailable"));
         }
       }
     };
@@ -88,7 +91,7 @@ export function Footer() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const visibleServices = useMemo(() => {
     if (serviceItems.length > 0) {
@@ -133,7 +136,7 @@ export function Footer() {
       }
 
       setNewsletterEmail("");
-      setNewsletterMessage("Thanks for subscribing.");
+      setNewsletterMessage(t("footer.thanksSubscribe"));
     } catch (error) {
       setNewsletterMessage(error instanceof Error ? error.message : "Subscription failed");
     } finally {
@@ -156,17 +159,17 @@ export function Footer() {
               </p>
 
               <div className="space-y-4 pt-4">
-                <h3 className="text-base font-semibold text-foreground">Newsletter</h3>
+                <h3 className="text-base font-semibold text-foreground">{t("footer.newsletter")}</h3>
                 <form className="flex max-w-sm flex-col gap-2 sm:flex-row" onSubmit={handleNewsletterSubmit}>
                   <Input
                     type="email"
-                    placeholder="Your Email"
+                    placeholder={t("footer.newsletterPh")}
                     className="border-border bg-background/50"
                     value={newsletterEmail}
                     onChange={(event) => setNewsletterEmail(event.target.value)}
                   />
                   <Button type="submit" disabled={newsletterLoading}>
-                    {newsletterLoading ? "Joining..." : "Subscribe"}
+                    {newsletterLoading ? t("footer.subscribing") : t("footer.subscribe")}
                   </Button>
                 </form>
                 {newsletterMessage && (
@@ -179,7 +182,7 @@ export function Footer() {
 
               {socialLinks.length > 0 && (
                 <div className="pt-4">
-                  <h3 className="mb-4 text-base font-semibold text-foreground">Follow Us</h3>
+                  <h3 className="mb-4 text-base font-semibold text-foreground">{t("footer.followUs")}</h3>
                   <div className="flex space-x-4">
                     {socialLinks.map(([name, href]) => {
                       const Icon = socialIcons[name as keyof typeof socialIcons];
@@ -206,7 +209,7 @@ export function Footer() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-base font-semibold text-foreground">Quick Links</h3>
+              <h3 className="mb-4 text-base font-semibold text-foreground">{t("footer.quick")}</h3>
               <ul className="space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.href}>
@@ -214,14 +217,14 @@ export function Footer() {
                       href={link.href}
                       className="text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
-                      {link.label}
+                      {t(link.labelKey)}
                     </Link>
                   </li>
                 ))}
                 <li>
                   <DialogTrigger asChild>
                     <button className="text-sm text-muted-foreground transition-colors hover:text-primary">
-                      Open Contact Form
+                      {t("footer.openContactForm")}
                     </button>
                   </DialogTrigger>
                 </li>
@@ -229,7 +232,7 @@ export function Footer() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-base font-semibold text-foreground">Services</h3>
+              <h3 className="mb-4 text-base font-semibold text-foreground">{t("footer.services")}</h3>
               <ul className="space-y-3">
                 {visibleServices.map((service) => (
                   <li key={service._id}>
@@ -245,7 +248,7 @@ export function Footer() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-base font-semibold text-foreground">Contact Info</h3>
+              <h3 className="mb-4 text-base font-semibold text-foreground">{t("footer.contactInfo")}</h3>
               <div className="space-y-4">
                 <div>
                   <h4 className="text-sm font-semibold text-foreground/90">{settings.officeName}</h4>
@@ -265,14 +268,14 @@ export function Footer() {
 
           <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-center md:flex-row md:text-left">
             <p className="text-sm text-muted-foreground">
-              © 2026 {settings.companyName}. All Rights Reserved.
+              © 2026 {settings.companyName}. {t("footer.rights")}
             </p>
             <div className="flex gap-6">
               <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary">
-                Privacy Policy
+                {t("footer.privacy")}
               </Link>
               <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary">
-                Terms & Conditions
+                {t("footer.terms")}
               </Link>
             </div>
           </div>
@@ -280,10 +283,8 @@ export function Footer() {
       </footer>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Contact Us</DialogTitle>
-          <DialogDescription>
-            Fill out the form below and we&apos;ll get back to you as soon as possible.
-          </DialogDescription>
+          <DialogTitle>{t("footer.dialogTitle")}</DialogTitle>
+          <DialogDescription>{t("footer.dialogDesc")}</DialogDescription>
         </DialogHeader>
         <ContactForm />
       </DialogContent>

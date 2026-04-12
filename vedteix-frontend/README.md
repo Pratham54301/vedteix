@@ -10,7 +10,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-- Runs at http://localhost:3000
+- Runs at http://localhost:1404
 - Make sure the backend is running for API routes.
 
 ## Build for Production

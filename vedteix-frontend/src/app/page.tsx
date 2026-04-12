@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { 
-  ArrowRight, ChevronRight, HeartHandshake, Milestone, Quote, MapPin, Mail, Phone
+import {
+  ChevronRight, HeartHandshake, Milestone, Quote, MapPin, Mail, Phone
 } from "lucide-react";
 import {
   portfolioProjects,
@@ -19,7 +18,6 @@ import {
   services as fallbackServices,
   technologies as fallbackTechnologies,
   whyChooseUs,
-  faqs,
   officeLocations,
 } from "@/lib/data";
 import Autoplay from "embla-carousel-autoplay";
@@ -30,6 +28,9 @@ import { Badge } from "@/components/ui/badge";
 import { serviceIconMap } from "@/lib/service-icons";
 import type { BlogPost, Portfolio, Service, SiteSettings, Technology, Testimonial } from "@/lib/types";
 import { slugify } from "@/lib/slugs";
+import { useTranslation } from "react-i18next";
+
+const WHY_SLUGS = ["expertTeam", "innovative", "clientCentric", "proven"] as const;
 
 const IconComponent = ({ name, className }: { name: string; className: string }) => {
   const Icon = serviceIconMap[name] || serviceIconMap.Code;
@@ -149,6 +150,7 @@ function TechnologyLogo({
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   const autoplayPlugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
@@ -216,7 +218,7 @@ export default function Home() {
         }
       } catch {
         if (!cancelled) {
-          setContentError("Some live homepage sections could not be loaded. Showing fallback content.");
+          setContentError(t("home.contentError"));
         }
       }
     };
@@ -226,7 +228,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const serviceCards = serviceItems.length > 0
     ? serviceItems
@@ -325,20 +327,20 @@ export default function Home() {
           <div className="container relative z-10 px-4 md:px-6">
             <div className="max-w-3xl mx-auto space-y-6">
               <h1 className="text-4xl font-bold tracking-tighter text-white sm:text-5xl xl:text-7xl/none animate-fade-in-down">
-                {siteSettings?.heroTitle || "Empowering Future-Ready Digital Solutions"}
+                {siteSettings?.heroTitle || t("home.heroFallbackTitle")}
               </h1>
               <p className="max-w-[600px] text-white/80 md:text-xl mx-auto animate-fade-in-up">
-                {siteSettings?.heroSubtitle || "We architect and engineer high-impact digital products, delivering secure, scalable, and intelligent solutions that propel businesses into the future."}
+                {siteSettings?.heroSubtitle || t("home.heroFallbackSubtitle")}
               </p>
               <div className="flex flex-col gap-4 min-[400px]:flex-row justify-center animate-fade-in-up">
                 <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_15px_hsl(var(--primary))] transition-all duration-300">
                   <Link href="/contact">
-                    Start Your Project
+                    {t("home.ctaStart")}
                   </Link> 
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-primary text-white hover:bg-primary/10 hover:shadow-[0_0_15px_hsl(var(--primary))] transition-all duration-300">
                   <Link href="/portfolio">
-                    Explore Portfolio
+                    {t("home.ctaPortfolio")}
                   </Link>
                 </Button>
               </div>
@@ -356,24 +358,24 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">About Us</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Pioneering Digital Innovation</h2>
+                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">{t("home.about.kicker")}</div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">{t("home.about.title")}</h2>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  VEDTEIX TECHNOLOGY is a forward-thinking technology partner dedicated to crafting bespoke digital solutions. We are a team of innovators, strategists, and problem-solvers who thrive on pushing the boundaries of what's possible. Our mission is to empower businesses with intelligent, scalable, and secure solutions that drive growth and create lasting value.
+                  {t("home.about.body")}
                 </p>
                 <div className="grid grid-cols-2 gap-6 pt-4">
                     <div className="flex items-center gap-3">
                         <Milestone className="h-10 w-10 text-primary"/>
                         <div>
                             <p className="text-2xl font-bold">{siteSettings?.stats.projectsCompleted ?? 100}+</p>
-                            <p className="text-sm text-muted-foreground">Projects Completed</p>
+                            <p className="text-sm text-muted-foreground">{t("home.about.projects")}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <HeartHandshake className="h-10 w-10 text-primary"/>
                         <div>
                             <p className="text-2xl font-bold">{siteSettings?.stats.happyClients ?? 50}+</p>
-                            <p className="text-sm text-muted-foreground">Happy Clients</p>
+                            <p className="text-sm text-muted-foreground">{t("home.about.clients")}</p>
                         </div>
                     </div>
                 </div>
@@ -383,7 +385,7 @@ export default function Home() {
                  src="/about.jpg"
                   width="600"
                   height="450"
-                  alt="Team collaboration"
+                  alt={t("home.about.imageAlt")}
                   data-ai-hint="team meeting"
                   className="mx-auto overflow-hidden rounded-xl object-cover"
                 />
@@ -396,10 +398,10 @@ export default function Home() {
         <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Our Services</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Capabilities for the Digital Age</h2>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">{t("home.services.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.services.title")}</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We provide a comprehensive suite of services designed to empower your business, from initial concept to final deployment and beyond.
+                {t("home.services.desc")}
               </p>
             </div>
             <div className="mx-auto grid max-w-7xl items-start gap-8 mt-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -411,7 +413,7 @@ export default function Home() {
                     </div>
                     <div>
                         <CardTitle>{item.title}</CardTitle>
-                        <CardDescription className="text-sm">Managed dynamically from the admin panel.</CardDescription>
+                        <CardDescription className="text-sm">{t("home.services.cardHint")}</CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow">
@@ -427,20 +429,23 @@ export default function Home() {
         <section id="why-choose-us" className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Why Choose Us</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Competitive Edge</h2>
+                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">{t("home.why.kicker")}</div>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.why.title")}</h2>
                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        Discover the advantages of partnering with a team that is as invested in your success as you are.
+                        {t("home.why.desc")}
                     </p>
                 </div>
                 <div className="mx-auto grid max-w-5xl gap-8 mt-12 sm:grid-cols-2 lg:grid-cols-4">
-                    {whyChooseUs.map((reason) => (
-                        <div key={reason.title} className="flex flex-col items-center text-center gap-4">
+                    {whyChooseUs.map((reason, index) => {
+                      const slug = WHY_SLUGS[index];
+                      return (
+                        <div key={slug} className="flex flex-col items-center text-center gap-4">
                             <IconComponent name={reason.iconName} className="h-10 w-10 text-primary" />
-                            <h3 className="text-xl font-bold">{reason.title}</h3>
-                            <p className="text-sm text-muted-foreground">{reason.description}</p>
+                            <h3 className="text-xl font-bold">{t(`home.why.items.${slug}.title`)}</h3>
+                            <p className="text-sm text-muted-foreground">{t(`home.why.items.${slug}.desc`)}</p>
                         </div>
-                    ))}
+                      );
+                    })}
                 </div>
             </div>
         </section>
@@ -449,10 +454,10 @@ export default function Home() {
         <section id="technologies" className="w-full py-12 md:py-24 lg:py-32 bg-secondary group">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Our Stack</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Technologies We Command</h2>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">{t("home.tech.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.tech.title")}</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We harness the power of premier technologies and platforms to build robust, scalable, and future-proof solutions. Our expertise ensures your project is built on a solid foundation for success.
+                {t("home.tech.desc")}
               </p>
             </div>
             <div className="w-full inline-flex flex-nowrap overflow-hidden mt-12 [mask-image:_linear_gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]">
@@ -484,10 +489,10 @@ export default function Home() {
         <section id="portfolio" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Portfolio</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Success Stories</h2>
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">{t("home.portfolio.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.portfolio.title")}</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Explore a selection of projects that showcase our capabilities and the results we've delivered.
+                {t("home.portfolio.desc")}
               </p>
             </div>
             <Carousel
@@ -525,7 +530,7 @@ export default function Home() {
             </Carousel>
             <div className="mt-12 text-center">
               <Button asChild size="lg">
-                <Link href="/portfolio">View All Projects</Link>
+                <Link href="/portfolio">{t("home.portfolio.viewAll")}</Link>
               </Button>
             </div>
           </div>
@@ -535,10 +540,10 @@ export default function Home() {
         <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                    <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Testimonials</div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Our Clients Say</h2>
+                    <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">{t("home.testimonials.kicker")}</div>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.testimonials.title")}</h2>
                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        Real stories from satisfied partners who have experienced our commitment and expertise firsthand.
+                        {t("home.testimonials.desc")}
                     </p>
                 </div>
                 <Carousel
@@ -582,10 +587,10 @@ export default function Home() {
         <section id="blog" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">From the Blog</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Latest Insights</h2>
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">{t("home.blog.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.blog.title")}</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Stay updated with the latest trends, thoughts, and insights from the VEDTEIX team.
+                  {t("home.blog.desc")}
               </p>
             </div>
             <Carousel
@@ -617,7 +622,7 @@ export default function Home() {
                               </CardContent>
                               <div className="p-6 pt-0 mt-auto">
                                 <div className="flex items-center text-primary font-semibold">
-                                    Read More <ChevronRight className="ml-1 h-4 w-4" />
+                                    {t("home.blog.readMore")} <ChevronRight className="ml-1 h-4 w-4" />
                                 </div>
                               </div>
                           </Link>
@@ -631,7 +636,7 @@ export default function Home() {
             </Carousel>
             <div className="mt-12 text-center">
                 <Button asChild size="lg">
-                    <Link href="/blog">View All Articles</Link>
+                    <Link href="/blog">{t("home.blog.viewAll")}</Link>
                 </Button>
             </div>
           </div>
@@ -641,13 +646,13 @@ export default function Home() {
         <section id="careers" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
           <div className="container px-4 md:px-6 text-center">
             <div className="flex flex-col items-center justify-center space-y-4 max-w-2xl mx-auto">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Careers</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Join Our Team of Innovators</h2>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">{t("home.careers.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.careers.title")}</h2>
               <p className="mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We are always looking for passionate and talented individuals to join our growing team. Explore our open positions and find your next great opportunity.
+                {t("home.careers.desc")}
               </p>
               <Button asChild size="lg">
-                <Link href="/careers">View Openings</Link>
+                <Link href="/careers">{t("home.careers.viewOpenings")}</Link>
               </Button>
             </div>
           </div>
@@ -657,24 +662,24 @@ export default function Home() {
         <section id="contact" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6">
             <div className="space-y-3">
-              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Contact Us</div>
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Let's Build Together</h2>
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">{t("home.contact.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">{t("home.contact.title")}</h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Have a project in mind or just want to say hello? We'd love to hear from you. Click the button below and we'll get back to you as soon as possible.
+                {t("home.contact.desc")}
               </p>
             </div>
             <div className="mx-auto w-full max-w-md space-y-4">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="lg" className="w-full" suppressHydrationWarning={true}>
-                    Send Message
+                    {t("home.contact.sendMessage")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
-                    <DialogTitle>Contact Us</DialogTitle>
+                    <DialogTitle>{t("home.contact.dialogTitle")}</DialogTitle>
                     <DialogDescription>
-                      Fill out the form below and we'll get back to you as soon as possible.
+                      {t("home.contact.dialogDesc")}
                     </DialogDescription>
                   </DialogHeader>
                   <ContactForm />
@@ -688,10 +693,10 @@ export default function Home() {
         <section id="locations" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Our Offices</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Come Visit Us</h2>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">{t("home.locations.kicker")}</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{t("home.locations.title")}</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We have offices in strategic locations to serve our clients better. Find the one nearest to you.
+                {t("home.locations.desc")}
               </p>
             </div>
             <div className="mx-auto grid max-w-lg gap-8 mt-12 sm:grid-cols-1">

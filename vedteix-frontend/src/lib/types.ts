@@ -81,6 +81,10 @@ export interface SiteSettings {
   contactEmail: string;
   contactPhone: string;
   address: string;
+  websiteUrl?: string;
+  gstNumber?: string;
+  invoiceLogoUrl?: string;
+  signatureUrl?: string;
   socialLinks: {
     linkedin?: string;
     twitter?: string;
@@ -117,9 +121,14 @@ export interface DashboardStats {
   totalServices: number;
   totalContacts: number;
   totalSubscriptions: number;
+  totalLeads?: number;
+  totalAppointments?: number;
+  totalChats?: number;
+  totalInvoices?: number;
   latestJobs: Job[];
   latestPortfolios: Portfolio[];
   latestContacts: ContactMessage[];
   latestSubscriptions: NewsletterSubscription[];
+  latestLeads?: unknown[];
   siteConfigured: boolean;
 }

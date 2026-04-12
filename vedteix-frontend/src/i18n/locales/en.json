@@ -1,0 +1,299 @@
+{
+  "brand": { "short": "VEDTEIX TECHNOLOGY" },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "technologies": "Technologies",
+    "company": "Company",
+    "portfolio": "Portfolio",
+    "book": "Book a call",
+    "careers": "Careers",
+    "contact": "Contact Us"
+  },
+  "navCompany": {
+    "about": "About Us",
+    "aboutDesc": "Learn about our mission and values.",
+    "life": "Life at VEDTEIX",
+    "lifeDesc": "Discover our culture and team.",
+    "process": "Our Process",
+    "processDesc": "How we bring ideas to life."
+  },
+  "mega": {
+    "web": {
+      "title": "Web Development",
+      "desc": "Crafting digital experiences for web and mobile."
+    },
+    "ai": {
+      "title": "AI & Automation",
+      "desc": "Leveraging intelligence to drive efficiency."
+    },
+    "design": {
+      "title": "Design & Branding",
+      "desc": "Creating memorable and impactful brand identities."
+    },
+    "item": {
+      "customSoftware": "Custom Software Development",
+      "mobileApp": "Mobile App Development",
+      "enterprise": "Enterprise Solutions",
+      "ml": "Machine Learning",
+      "rpa": "Robotic Process Automation",
+      "analytics": "Data Analytics",
+      "uiux": "UI/UX Design",
+      "brand": "Brand Strategy",
+      "marketing": "Digital Marketing"
+    },
+    "tech": {
+      "fe": { "title": "Frontend", "desc": "Engaging user interfaces." },
+      "be": { "title": "Backend", "desc": "Robust and scalable server-side logic." },
+      "mobile": { "title": "Mobile", "desc": "Native and cross-platform apps." },
+      "react": "React.js",
+      "angular": "Angular",
+      "vue": "Vue.js",
+      "node": "Node.js",
+      "python": "Python",
+      "java": "Java",
+      "ios": "iOS (Swift)",
+      "android": "Android (Kotlin)",
+      "flutter": "Flutter"
+    }
+  },
+  "header": {
+    "getStarted": "Get Started",
+    "toggleMenu": "Toggle Menu",
+    "language": "Language"
+  },
+  "theme": {
+    "light": "Switch to light mode",
+    "dark": "Switch to dark mode"
+  },
+  "home": {
+    "heroFallbackTitle": "Empowering Future-Ready Digital Solutions",
+    "heroFallbackSubtitle": "We architect and engineer high-impact digital products, delivering secure, scalable, and intelligent solutions that propel businesses into the future.",
+    "ctaStart": "Start Your Project",
+    "ctaPortfolio": "Explore Portfolio",
+    "contentError": "Some live homepage sections could not be loaded. Showing fallback content.",
+    "about": {
+      "kicker": "About Us",
+      "title": "Pioneering Digital Innovation",
+      "body": "VEDTEIX TECHNOLOGY is a forward-thinking technology partner dedicated to crafting bespoke digital solutions. We are a team of innovators, strategists, and problem-solvers who thrive on pushing the boundaries of what is possible. Our mission is to empower businesses with intelligent, scalable, and secure solutions that drive growth and create lasting value.",
+      "projects": "Projects Completed",
+      "clients": "Happy Clients",
+      "imageAlt": "Team collaboration"
+    },
+    "services": {
+      "kicker": "Our Services",
+      "title": "Capabilities for the Digital Age",
+      "desc": "We provide a comprehensive suite of services designed to empower your business, from initial concept to final deployment and beyond.",
+      "cardHint": "Managed dynamically from the admin panel."
+    },
+    "why": {
+      "kicker": "Why Choose Us",
+      "title": "Our Competitive Edge",
+      "desc": "Discover the advantages of partnering with a team that is as invested in your success as you are.",
+      "items": {
+        "expertTeam": {
+          "title": "Expert Team",
+          "desc": "Our team consists of industry veterans and passionate technologists committed to excellence."
+        },
+        "innovative": {
+          "title": "Innovative Solutions",
+          "desc": "We stay at the forefront of technology to deliver cutting-edge solutions that solve real-world problems."
+        },
+        "clientCentric": {
+          "title": "Client-Centric Approach",
+          "desc": "Your success is our priority. We work closely with you to understand your goals and deliver results."
+        },
+        "proven": {
+          "title": "Proven Results",
+          "desc": "We have a track record of delivering successful projects for clients across various industries."
+        }
+      }
+    },
+    "tech": {
+      "kicker": "Our Stack",
+      "title": "Technologies We Command",
+      "desc": "We harness the power of premier technologies and platforms to build robust, scalable, and future-proof solutions. Our expertise ensures your project is built on a solid foundation for success."
+    },
+    "portfolio": {
+      "kicker": "Portfolio",
+      "title": "Our Success Stories",
+      "desc": "Explore a selection of projects that showcase our capabilities and the results we have delivered.",
+      "viewAll": "View All Projects"
+    },
+    "testimonials": {
+      "kicker": "Testimonials",
+      "title": "What Our Clients Say",
+      "desc": "Real stories from satisfied partners who have experienced our commitment and expertise firsthand."
+    },
+    "blog": {
+      "kicker": "From the Blog",
+      "title": "Latest Insights",
+      "desc": "Stay updated with the latest trends, thoughts, and insights from the VEDTEIX team.",
+      "readMore": "Read More",
+      "viewAll": "View All Articles"
+    },
+    "careers": {
+      "kicker": "Careers",
+      "title": "Join Our Team of Innovators",
+      "desc": "We are always looking for passionate and talented individuals to join our growing team. Explore our open positions and find your next great opportunity.",
+      "viewOpenings": "View Openings"
+    },
+    "contact": {
+      "kicker": "Contact Us",
+      "title": "Let's Build Together",
+      "desc": "Have a project in mind or just want to say hello? We would love to hear from you. Click the button below and we will get back to you as soon as possible.",
+      "sendMessage": "Send Message",
+      "dialogTitle": "Contact Us",
+      "dialogDesc": "Fill out the form below and we will get back to you as soon as possible."
+    },
+    "locations": {
+      "kicker": "Our Offices",
+      "title": "Come Visit Us",
+      "desc": "We have offices in strategic locations to serve our clients better. Find the one nearest to you."
+    }
+  },
+  "aboutPage": {
+    "title": "About Us",
+    "intro": "Welcome to Vedteix Technology! We are a team of innovators, strategists, and problem-solvers dedicated to empowering businesses with intelligent, scalable, and secure solutions.",
+    "values": {
+      "innovation": {
+        "title": "Innovation",
+        "desc": "We push boundaries and embrace new technologies to deliver cutting-edge solutions."
+      },
+      "collaboration": {
+        "title": "Collaboration",
+        "desc": "We believe in teamwork and transparent communication with our clients."
+      },
+      "integrity": {
+        "title": "Integrity",
+        "desc": "We act with honesty and uphold the highest ethical standards in all we do."
+      }
+    },
+    "testimonialsHeading": "What Our Clients Say",
+    "logoAlt": "Vedteix Technology Logo",
+    "mission": "We are passionate about helping businesses grow through technology. Our mission is to deliver value, foster innovation, and build lasting partnerships."
+  },
+  "servicesPage": {
+    "title": "Our Services",
+    "subtitle": "Every service card below is now backed by the database and can be managed directly from the admin panel.",
+    "loading": "Loading services...",
+    "loadFailed": "Failed to load services"
+  },
+  "login": {
+    "title": "Sign In",
+    "desc": "Use your account password or continue with Google to open your workspace.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Continue with password",
+    "submitting": "Signing in...",
+    "or": "or",
+    "google": "Login with Google",
+    "googleRedirect": "Redirecting to Google...",
+    "failedTitle": "Login failed",
+    "invalidCredentials": "Invalid credentials",
+    "networkError": "Unable to reach the authentication service.",
+    "loadingPage": "Loading login...",
+    "errors": {
+      "google_not_configured": "Google sign-in is not configured yet.",
+      "google_failed": "Google sign-in was cancelled or could not be completed.",
+      "google_callback_failed": "Google sign-in returned an unexpected response.",
+      "google_session_failed": "Google sign-in succeeded, but the session could not be created.",
+      "logout_failed": "Logout could not be completed cleanly."
+    }
+  },
+  "contact": {
+    "kicker": "Contact",
+    "title": "Let's build something meaningful together",
+    "subtitle": "Share your goals, timeline, and product vision. We'll review your request and come back with the right next step.",
+    "formTitle": "Send us a message",
+    "reachTitle": "Reach us directly",
+    "email": "Email",
+    "phone": "Phone",
+    "mapTitle": "Office location",
+    "loading": "Refreshing contact details...",
+    "name": "Name",
+    "namePh": "Your name",
+    "emailPh": "your.email@example.com",
+    "phoneLabel": "Phone (optional)",
+    "phonePh": "+91 ...",
+    "subject": "Subject",
+    "subjectPh": "How can we help?",
+    "message": "Message",
+    "messagePh": "Tell us how we can help",
+    "send": "Send message",
+    "sending": "Sending...",
+    "successTitle": "Message sent",
+    "successDesc": "We received your message and will get back to you shortly.",
+    "errorTitle": "Something went wrong"
+  },
+  "book": {
+    "kicker": "Scheduling",
+    "title": "Book an appointment",
+    "subtitle": "Pick a date and time. You'll receive a meeting link after booking.",
+    "name": "Full name",
+    "email": "Email",
+    "date": "Date",
+    "time": "Time",
+    "submit": "Confirm booking",
+    "submitting": "Booking...",
+    "success": "You're booked",
+    "successDesc": "Check your email for details. Meeting link:",
+    "pickDate": "Choose a date",
+    "slots": "Available slots",
+    "completeFields": "Please complete all fields."
+  },
+  "chat": {
+    "open": "Open chat",
+    "close": "Close",
+    "title": "Vedteix Assistant",
+    "subtitle": "Ask anything — we'll capture your details for follow-up.",
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "hint": "Share your name, email, and what you need for a faster response.",
+    "name": "Name",
+    "email": "Email",
+    "need": "What do you need?",
+    "thinking": "Thinking...",
+    "errorFallback": "Sorry, something went wrong. Please try again or use the contact form."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "quick": "Quick links",
+    "services": "Services",
+    "contact": "Contact",
+    "contactInfo": "Contact info",
+    "newsletter": "Newsletter",
+    "newsletterPh": "Your email",
+    "subscribe": "Subscribe",
+    "subscribing": "Joining...",
+    "followUs": "Follow us",
+    "openContactForm": "Open contact form",
+    "thanksSubscribe": "Thanks for subscribing.",
+    "dialogTitle": "Contact us",
+    "dialogDesc": "Send a message and our team will respond shortly.",
+    "privacy": "Privacy policy",
+    "terms": "Terms and conditions",
+    "unavailable": "Some footer details are temporarily unavailable.",
+    "about": "About us"
+  },
+  "lang": { "en": "English", "hi": "हिन्दी", "gu": "ગુજરાતી" },
+  "admin": {
+    "panel": "Admin Panel",
+    "overview": "Overview",
+    "leads": "Leads",
+    "appointments": "Appointments",
+    "chats": "Chat history",
+    "invoices": "Invoices",
+    "invoiceBranding": "Invoice branding",
+    "jobs": "Jobs",
+    "portfolios": "Portfolios",
+    "services": "Services",
+    "blogs": "Blogs",
+    "testimonials": "Testimonials",
+    "technologies": "Technologies",
+    "contacts": "Contacts",
+    "newsletters": "Newsletters",
+    "settings": "Settings",
+    "logout": "Logout"
+  }
+}

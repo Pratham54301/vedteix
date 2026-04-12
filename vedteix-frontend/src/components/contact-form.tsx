@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +26,13 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  subject: z.string().max(120, {
-    message: "Subject must be 120 characters or less.",
-  }).optional(),
+  phone: z.string().max(40).optional(),
+  subject: z
+    .string()
+    .max(120, {
+      message: "Subject must be 120 characters or less.",
+    })
+    .optional(),
   message: z.string().min(10, {
     message: "Message must be at least 10 characters.",
   }),
@@ -36,12 +41,14 @@ const formSchema = z.object({
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       subject: "",
       message: "",
     },
@@ -65,14 +72,14 @@ export function ContactForm() {
       }
 
       toast({
-        title: "Message sent",
-        description: payload.message || "We received your message and will get back to you shortly.",
+        title: t("contact.successTitle"),
+        description: payload.message || t("contact.successDesc"),
       });
       form.reset();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: t("contact.errorTitle"),
         description:
           error instanceof Error
             ? error.message
@@ -91,9 +98,9 @@ export function ContactForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t("contact.name")}</FormLabel>
               <FormControl>
-                <Input placeholder="Your Name" {...field} />
+                <Input placeholder={t("contact.namePh")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,9 +111,22 @@ export function ContactForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("contact.email")}</FormLabel>
               <FormControl>
-                <Input placeholder="your.email@example.com" {...field} />
+                <Input placeholder={t("contact.emailPh")} type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("contact.phoneLabel")}</FormLabel>
+              <FormControl>
+                <Input placeholder={t("contact.phonePh")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,9 +137,9 @@ export function ContactForm() {
           name="subject"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject</FormLabel>
+              <FormLabel>{t("contact.subject")}</FormLabel>
               <FormControl>
-                <Input placeholder="How can we help?" {...field} />
+                <Input placeholder={t("contact.subjectPh")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -130,10 +150,10 @@ export function ContactForm() {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message</FormLabel>
+              <FormLabel>{t("contact.message")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Tell us how we can help"
+                  placeholder={t("contact.messagePh")}
                   className="min-h-[120px] resize-none"
                   {...field}
                 />
@@ -143,7 +163,7 @@ export function ContactForm() {
           )}
         />
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Sending..." : "Send Message"}
+          {isSubmitting ? t("contact.sending") : t("contact.send")}
         </Button>
       </form>
     </Form>

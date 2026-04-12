@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-
-const THEME_COOKIE_NAME = "theme";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+import { THEME_KEY, applyDark, writeCookie } from "@/components/providers/theme-bootstrap";
 
 function applyTheme(isDark: boolean) {
-  document.documentElement.classList.toggle("dark", isDark);
-  document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+  applyDark(isDark);
 }
 
 export function ThemeToggle({
@@ -17,6 +15,7 @@ export function ThemeToggle({
 }: {
   initialTheme: "dark" | "light";
 }) {
+  const { t } = useTranslation();
   const [isDark, setIsDark] = useState(initialTheme === "dark");
 
   useEffect(() => {
@@ -29,7 +28,12 @@ export function ThemeToggle({
     const nextIsDark = !isDark;
     setIsDark(nextIsDark);
     applyTheme(nextIsDark);
-    document.cookie = `${THEME_COOKIE_NAME}=${nextIsDark ? "dark" : "light"}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
+    try {
+      localStorage.setItem(THEME_KEY, nextIsDark ? "dark" : "light");
+    } catch {
+      /* ignore */
+    }
+    writeCookie(nextIsDark);
   }
 
   return (
@@ -38,8 +42,8 @@ export function ThemeToggle({
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t("theme.light") : t("theme.dark")}
+      title={isDark ? t("theme.light") : t("theme.dark")}
     >
       {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
