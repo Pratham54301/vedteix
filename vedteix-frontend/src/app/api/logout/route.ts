@@ -7,10 +7,11 @@ import {
 
 export async function POST(request: Request) {
   const isProduction = process.env.NODE_ENV === 'production';
+  const sameSiteValue: 'none' | 'lax' = isProduction ? 'none' : 'lax';
   const cookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: (isProduction ? 'none' : 'lax') as const,
+    sameSite: sameSiteValue,
     path: '/',
     maxAge: 0,
   };
