@@ -1,4 +1,5 @@
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'vedteix.sid';
+const SESSION_COOKIE_DOMAIN = process.env.SESSION_COOKIE_DOMAIN?.trim();
 
 function getFrontendBaseUrl() {
   return (process.env.FRONTEND_URL || 'http://localhost:1404')
@@ -9,12 +10,18 @@ function getFrontendBaseUrl() {
 }
 
 function getSessionCookieOptions() {
-  return {
+  const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/',
   };
+
+  if (SESSION_COOKIE_DOMAIN) {
+    options.domain = SESSION_COOKIE_DOMAIN;
+  }
+
+  return options;
 }
 
 function buildSessionUser(user) {

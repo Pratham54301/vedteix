@@ -1,4 +1,6 @@
 require('dotenv').config();
 
-console.log('🔍 Checking environment variable...');
-console.log('MONGODB_URI:', process.env.MONGODB_URI);
+const hasMongoUri = Boolean(process.env.MONGODB_URI);
+
+console.log('Checking required environment variables...');
+console.log('MONGODB_URI configured:', hasMongoUri ? 'yes' : 'no');
