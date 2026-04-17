@@ -60,7 +60,7 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_gmail_app_password
-CLIENT_URL=http://localhost:3000
+CLIENT_URL=http://localhost:1404
 ```
 
 ---

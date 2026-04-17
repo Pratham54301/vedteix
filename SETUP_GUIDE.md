@@ -103,7 +103,7 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWr
 JWT_SECRET=your_super_secret_jwt_key_minimum_32_characters_long
 
 # Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:1404
 
 # Seeded Admin User
 ADMIN_NAME=Vedteix Admin
@@ -191,7 +191,7 @@ cd vedteix-frontend
 npm run dev
 ```
 
-The frontend should start on `http://localhost:3000`
+The frontend should start on `http://localhost:1404`
 
 ---
 
@@ -440,3 +440,115 @@ If you encounter issues:
 **Last Updated:** 2026-04-08
 **Version:** 1.0.0
 
+
+<!-- 
+frontend 
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
+BACKEND_URL=http://localhost:5001
+NEXT_PUBLIC_SESSION_COOKIE_NAME=vedteix.sid
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2025-07-22 -->
+
+<!-- 
+backend 
+
+PORT=5001
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
+SESSION_SECRET=oEATFeT2sxR0cWouubEDWFX2tyLvP1f/x1V95KSR+XNDpSL6e5XQj4yrLQJUMx5L
+SESSION_COOKIE_NAME=vedteix.sid
+SESSION_MAX_AGE_MS=604800000
+FRONTEND_URL=http://localhost:1404
+BACKEND_PUBLIC_URL=http://localhost:5001
+SESSION_COOKIE_NAME=vedteix.sid
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.0-flash
+MEETING_LINK_BASE=https://meet.google.com/new
+ADMIN_NAME=Vedteix Admin
+ADMIN_EMAIL=admin@vedteix.com
+ADMIN_PASSWORD=your_secure_admin_password
+ADMIN_SYNC_PASSWORD=true
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+EMAIL_FROM=your_email@gmail.com
+EMAIL_TO=admin@example.com
+GOOGLE_CLIENT_ID=1080765228404-juurifadinl5jh1k0s593v1f5b5lck2j.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+CLOUDINARY_CLOUD_NAME=dacib7c17
+CLOUDINARY_API_KEY=275957479576414
+CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_FOLDER=vedteix       
+CLOUDINARY_FOLDER_TESTIMONIALS=vedteix/testimonials
+CLOUDINARY_FOLDER_SERVICES=vedteix/services
+CLOUDINARY_FOLDER_BLOGS=vedteix/blogs
+CLOUDINARY_FOLDER_PORTFOLIO=vedteix/portfolio
+CLOUDINARY_FOLDER_CAREERS=vedteix/careers
+CLOUDINARY_FOLDER_CONTACT=vedteix/contact
+CLOUDINARY_FOLDER_ABOUT=vedteix/about
+CLOUDINARY_FOLDER_HOME=vedteix/home
+CLOUDINARY_FOLDER_TECHNOLOGIES=vedteix/technologies
+
+
+PORT=5001
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
+SESSION_SECRET=oEATFeT2sxR0cWouubEDWFX2tyLvP1f/x1V95KSR+XNDpSL6e5XQj4yrLQJUMx5L
+FRONTEND_URL=http://localhost:1404
+BACKEND_PUBLIC_URL=http://localhost:5001
+SESSION_COOKIE_NAME=vedteix.sid
+SESSION_MAX_AGE_MS=604800000
+
+# Optional: Google OAuth
+GOOGLE_CLIENT_ID=1080765228404-juurifadinl5jh1k0s593v1f5b5lck2j.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5001/auth/google/callback
+
+# Bootstrap admin (optional)
+ADMIN_NAME=Vedteix Admin
+ADMIN_EMAIL=admin@vedteix.com
+ADMIN_PASSWORD=your_secure_admin_password
+ADMIN_SYNC_PASSWORD=true
+
+# Email (optional)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+EMAIL_FROM=your_email@gmail.com
+EMAIL_TO=admin@example.com
+
+# Cloudinary (image uploads)
+CLOUDINARY_CLOUD_NAME=dacib7c17
+CLOUDINARY_API_KEY=275957479576414
+CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_FOLDER=vedteix       
+CLOUDINARY_FOLDER_TESTIMONIALS=vedteix/testimonials
+CLOUDINARY_FOLDER_SERVICES=vedteix/services
+CLOUDINARY_FOLDER_BLOGS=vedteix/blogs
+CLOUDINARY_FOLDER_PORTFOLIO=vedteix/portfolio
+CLOUDINARY_FOLDER_CAREERS=vedteix/careers
+CLOUDINARY_FOLDER_CONTACT=vedteix/contact
+CLOUDINARY_FOLDER_ABOUT=vedteix/about
+CLOUDINARY_FOLDER_HOME=vedteix/home
+CLOUDINARY_FOLDER_TECHNOLOGIES=vedteix/technologies
+
+
+
+
+# AI chat (Google Gemini). Required for smart replies; without it, scripted replies are used.
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.0-flash
+
+# Appointment meeting links: default is https://meet.google.com/new
+# Or set a custom base, e.g. https://meet.vedteix.com
+MEETING_LINK_BASE=https://meet.google.com/new
+
+
+
+
+
+ -->
