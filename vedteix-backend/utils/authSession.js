@@ -10,10 +10,11 @@ function getFrontendBaseUrl() {
 }
 
 function getSessionCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   };
 

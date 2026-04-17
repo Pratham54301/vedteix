@@ -11,7 +11,10 @@ import { Alert } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 
 const BACKEND_AUTH_BASE =
-  (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001").replace(/\/$/, "");
+  (
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    (process.env.NODE_ENV !== "production" ? "http://localhost:5001" : "")
+  ).replace(/\/$/, "");
 
 function getAuthErrorMessage(
   t: (key: string) => string,
@@ -80,6 +83,16 @@ function LoginForm() {
 
   function handleGoogleLogin() {
     setGoogleLoading(true);
+    if (!BACKEND_AUTH_BASE) {
+      setGoogleLoading(false);
+      setError(t("login.networkError"));
+      toast({
+        title: t("login.failedTitle"),
+        description: t("login.networkError"),
+        variant: "destructive",
+      });
+      return;
+    }
     const target = `${BACKEND_AUTH_BASE}/auth/google?from=${encodeURIComponent(requestedPath)}`;
     window.location.assign(target);
   }

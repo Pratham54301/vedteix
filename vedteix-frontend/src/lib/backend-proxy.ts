@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const DEFAULT_BACKEND_URL =
-  process.env.BACKEND_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  'http://localhost:5001';
+function resolveBackendBaseUrl() {
+  const configuredUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    process.env.BACKEND_URL ||
+    (process.env.NODE_ENV !== 'production' ? 'http://localhost:5001' : '');
+
+  if (!configuredUrl) {
+    throw new Error('Missing NEXT_PUBLIC_BACKEND_URL for production runtime');
+  }
+
+  return configuredUrl.replace(/\/$/, '');
+}
 export const SESSION_COOKIE_NAME =
   process.env.SESSION_COOKIE_NAME ||
   process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME ||
   'vedteix.sid';
 
 function getBackendBaseUrl() {
-  return DEFAULT_BACKEND_URL.replace(/\/$/, '');
+  return resolveBackendBaseUrl();
 }
 
 export async function parseBackendResponse(response: Response) {

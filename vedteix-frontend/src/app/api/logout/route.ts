@@ -6,10 +6,11 @@ import {
 } from '@/lib/backend-proxy';
 
 export async function POST(request: Request) {
+  const isProduction = process.env.NODE_ENV === 'production';
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict' as const,
+    secure: isProduction,
+    sameSite: (isProduction ? 'none' : 'lax') as const,
     path: '/',
     maxAge: 0,
   };

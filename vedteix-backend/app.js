@@ -32,21 +32,30 @@ app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:1404')
   .split(',')
   .map((origin) => origin.trim())
+  .map((origin) => origin.replace(/\/$/, ''))
   .filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = origin?.replace(/\/$/, '');
+
+    if (!origin || (normalizedOrigin && allowedOrigins.includes(normalizedOrigin))) {
       callback(null, true);
       return;
     }
 
-    callback(new Error('Origin not allowed by CORS'));
+    const corsError = new Error('Origin not allowed by CORS');
+    corsError.status = 403;
+    corsError.expose = true;
+    callback(corsError);
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Connect to MongoDB
 const uri =
@@ -67,9 +76,7 @@ if (!sessionSecret) {
   process.exit(1);
 }
 
-if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1);
-}
+app.set('trust proxy', 1);
 
 configurePassport();
 
