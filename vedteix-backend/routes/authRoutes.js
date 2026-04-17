@@ -6,13 +6,14 @@ const {
   getProfile,
 } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
+const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.post('/logout', logoutUser);
-router.get('/me', protect, getProfile);
-router.get('/profile', protect, getProfile);
+router.post('/register', asyncHandler(registerUser));
+router.post('/login', asyncHandler(loginUser));
+router.post('/logout', asyncHandler(logoutUser));
+router.get('/me', protect, asyncHandler(getProfile));
+router.get('/profile', protect, asyncHandler(getProfile));
 
-module.exports = router; 
+module.exports = router;
