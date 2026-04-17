@@ -165,6 +165,14 @@ async function startServer() {
 
       process.exit(1);
     });
+
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM received, shutting down gracefully...');
+      server.close(() => {
+        console.log('Server closed. Exiting.');
+        process.exit(0);
+      });
+    });
   } catch (error) {
     console.error('Failed to start backend:', error);
     process.exit(1);
