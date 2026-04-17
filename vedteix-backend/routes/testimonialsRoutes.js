@@ -3,16 +3,17 @@ const { createTestimonial, getAllTestimonials, getTestimonialById, updateTestimo
 const { protect } = require('../middlewares/authMiddleware');
 const { isAdmin } = require('../middlewares/auth');
 const upload = require('../utils/multer');
+const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
 // Public
-router.get('/', getAllTestimonials);
-router.get('/:id', getTestimonialById);
+router.get('/', asyncHandler(getAllTestimonials));
+router.get('/:id', asyncHandler(getTestimonialById));
 
 // Admin only
-router.post('/', protect, isAdmin, upload.single('image'), createTestimonial);
-router.put('/:id', protect, isAdmin, upload.single('image'), updateTestimonial);
-router.delete('/:id', protect, isAdmin, deleteTestimonial);
+router.post('/', protect, isAdmin, upload.single('image'), asyncHandler(createTestimonial));
+router.put('/:id', protect, isAdmin, upload.single('image'), asyncHandler(updateTestimonial));
+router.delete('/:id', protect, isAdmin, asyncHandler(deleteTestimonial));
 
 module.exports = router; 
