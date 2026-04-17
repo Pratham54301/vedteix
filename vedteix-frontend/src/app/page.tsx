@@ -560,7 +560,7 @@ export default function Home() {
                                     <Card className="flex flex-col justify-between h-full bg-background">
                                         <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                                             <Quote className="w-8 h-8 text-primary" />
-                                            <p className="text-muted-foreground italic text-base">"{testimonial.quote}"</p>
+                                            <p className="text-muted-foreground italic text-base">&ldquo;{testimonial.quote}&rdquo;</p>
                                         </CardContent>
                                         <CardHeader className="flex flex-col items-center text-center p-6 pt-0">
                                             <Avatar>

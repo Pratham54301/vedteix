@@ -19,10 +19,6 @@ type CaseStudyWithImage = BaseCaseStudy & {
     imageUrl: string;
 };
 
-type CaseStudyMaybeWithImage = BaseCaseStudy & {
-    imageUrl?: string;
-};
-
 export const services = [
   {
     iconName: "Code",

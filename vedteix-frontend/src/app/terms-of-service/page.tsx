@@ -36,7 +36,7 @@ export default function TermsOfServicePage() {
             <h2 className="mt-8 mb-4 text-2xl font-bold text-primary">2. Use License</h2>
             <p className="mb-4">
               Permission is granted to temporarily download one copy of the
-              materials (information or software) on VEDTEIX TECHNOLOGY's website
+              materials (information or software) on VEDTEIX TECHNOLOGY&apos;s website
               for personal, non-commercial transitory viewing only. This is the
               grant of a license, not a transfer of title, and under this license
               you may not:
@@ -49,14 +49,14 @@ export default function TermsOfServicePage() {
               </li>
               <li>
                 attempt to decompile or reverse engineer any software contained
-                on VEDTEIX TECHNOLOGY's website;
+                on VEDTEIX TECHNOLOGY&apos;s website;
               </li>
               <li>
                 remove any copyright or other proprietary notations from the
                 materials; or
               </li>
               <li>
-                transfer the materials to another person or "mirror" the
+                transfer the materials to another person or &quot;mirror&quot; the
                 materials on any other server.
               </li>
             </ol>
@@ -68,7 +68,7 @@ export default function TermsOfServicePage() {
 
             <h2 className="mt-8 mb-4 text-2xl font-bold text-primary">3. Disclaimer</h2>
             <p className="mb-6">
-              The materials on VEDTEIX TECHNOLOGY's website are provided "as is".
+              The materials on VEDTEIX TECHNOLOGY&apos;s website are provided &quot;as is&quot;.
               VEDTEIX TECHNOLOGY makes no warranties, expressed or implied, and
               hereby disclaims and negates all other warranties, including
               without limitation, implied warranties or conditions of
@@ -79,7 +79,7 @@ export default function TermsOfServicePage() {
             
             <h2 className="mt-8 mb-4 text-2xl font-bold text-primary">4. Governing Law</h2>
             <p className="mb-6">
-                Any claim relating to VEDTEIX TECHNOLOGY's website shall be governed
+                Any claim relating to VEDTEIX TECHNOLOGY&apos;s website shall be governed
                 by the laws of India without regard to its conflict of law
                 provisions.
             </p>

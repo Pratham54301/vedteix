@@ -22,7 +22,7 @@ export async function parseBackendResponse(response: Response) {
 
   try {
     return JSON.parse(text);
-  } catch (error) {
+  } catch {
     return { message: text };
   }
 }
@@ -30,7 +30,7 @@ export async function parseBackendResponse(response: Response) {
 export async function readJsonBody<T>(request: Request | NextRequest): Promise<T | null> {
   try {
     return await request.json();
-  } catch (error) {
+  } catch {
     return null;
   }
 }

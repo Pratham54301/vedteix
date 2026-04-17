@@ -4,12 +4,24 @@ import { proxyJsonRequest, readJsonBody } from '@/lib/backend-proxy';
 const MAX_FIELD_LENGTH = 1000;
 const MAX_MESSAGE_LENGTH = 5000;
 
-function validateContactInput(body: any): { valid: boolean; error?: string } {
+type ContactInput = {
+  name: string;
+  email: string;
+  message: string;
+  subject?: string;
+  phone?: string;
+};
+
+type ContactValidationResult =
+  | { valid: true; value: ContactInput }
+  | { valid: false; error: string };
+
+function validateContactInput(body: unknown): ContactValidationResult {
   if (!body || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
   }
 
-  const { name, email, message, subject, phone } = body;
+  const { name, email, message, subject, phone } = body as Record<string, unknown>;
 
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     return { valid: false, error: 'Name is required' };
@@ -44,35 +56,37 @@ function validateContactInput(body: any): { valid: boolean; error?: string } {
     return { valid: false, error: 'Invalid phone' };
   }
 
-  return { valid: true };
+  return {
+    valid: true,
+    value: {
+      name,
+      email,
+      message,
+      subject: typeof subject === 'string' ? subject : undefined,
+      phone: typeof phone === 'string' ? phone : undefined,
+    },
+  };
 }
 
 export async function POST(request: NextRequest) {
   const body = await readJsonBody(request);
   const validation = validateContactInput(body);
-  if (!validation.valid) {
+  if (validation.valid === false) {
     return NextResponse.json(
       { error: validation.error },
       { status: 400 }
     );
   }
 
-  const b = body as {
-    name: string;
-    email: string;
-    message: string;
-    subject?: string;
-    phone?: string;
-  };
-
+  const contact = validation.value;
   const leadBody = {
-    name: b.name.trim(),
-    email: b.email.trim(),
-    phone: typeof b.phone === 'string' ? b.phone.trim() : '',
+    name: contact.name.trim(),
+    email: contact.email.trim(),
+    phone: contact.phone ? contact.phone.trim() : '',
     message:
-      b.subject && b.subject.trim().length > 0
-        ? `[${b.subject.trim()}]\n\n${b.message.trim()}`
-        : b.message.trim(),
+      contact.subject && contact.subject.trim().length > 0
+        ? `[${contact.subject.trim()}]\n\n${contact.message.trim()}`
+        : contact.message.trim(),
     source: 'contact_form',
   };
 

@@ -1,11 +1,11 @@
 import { client } from "./client";
 
-type SanityFetchParams<TData> = {
+type SanityFetchParams = {
   query: string;
   params?: Record<string, unknown>;
 };
 
-export async function sanityFetch<TData>({ query, params }: SanityFetchParams<TData>) {
+export async function sanityFetch<TData>({ query, params }: SanityFetchParams) {
   return client.fetch<TData>(query, params);
 }
 

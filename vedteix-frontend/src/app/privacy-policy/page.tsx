@@ -23,8 +23,8 @@ export default function PrivacyPolicyPage() {
 
           <div className="mt-8 text-foreground max-w-none">
             <p className="mb-6">
-              VEDTEIX TECHNOLOGY ("us", "we", or "our") operates the VEDTEIX
-              website (the "Service"). This page informs you of our policies
+              VEDTEIX TECHNOLOGY (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates the VEDTEIX
+              website (the &quot;Service&quot;). This page informs you of our policies
               regarding the collection, use, and disclosure of personal data
               when you use our Service and the choices you have associated with
               that data.
@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
             <p className="mb-4">
               While using our Service, we may ask you to provide us with certain
               personally identifiable information that can be used to contact or
-              identify you ("Personal Data"). Personally identifiable
+              identify you (&quot;Personal Data&quot;). Personally identifiable
               information may include, but is not limited to:
             </p>
             <ul className="list-disc pl-6 mb-6 space-y-1">
